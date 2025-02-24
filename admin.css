@@ -1,0 +1,193 @@
+/* Reset & Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #74ABE2, #5563DE);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: #fff;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(to right, #5563DE, #74ABE2);
+    color: #fff;
+    text-align: center;
+    padding: 24px;
+}
+
+.admin-panel {
+    padding: 24px;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #5563DE;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(85, 99, 222, 0.1);
+}
+
+/* Upload Container Styling */
+.upload-container {
+    position: relative;
+    border: 2px dashed #e1e1e1;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-container:hover {
+    border-color: #5563DE;
+}
+
+.upload-container input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+}
+
+.upload-icon {
+    font-size: 24px;
+}
+
+/* Image Preview */
+.image-preview {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.image-preview img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Styling */
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(to right, #5563DE, #74ABE2);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to right, #4451b5, #5c8cc7);
+}
+
+.btn-secondary {
+    background: #e1e1e1;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #d1d1d1;
+}
+
+/* QR Code Section */
+#qrcode-section {
+    display: none;
+    text-align: center;
+}
+
+.qr-container {
+    padding: 20px;
+}
+
+#student-details {
+    margin-bottom: 24px;
+}
+
+#student-details img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #5563DE;
+    margin-bottom: 16px;
+}
+
+#student-details p {
+    margin: 8px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+#qrcode {
+    margin: 0 auto 24px;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}
+
+/* Disabled Button State */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

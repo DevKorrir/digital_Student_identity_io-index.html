@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Student Identity</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Digital Student Identity</h1>
+        </header>
+
+        <div class="admin-panel">
+            <!-- Form Section -->
+            <div id="form-section">
+                <h2>Student Details</h2>
+                <form id="student-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="Enter Full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId" placeholder="Enter Student Id" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Student Email</label>
+                        <input type="email" id="email" placeholder="Enter Email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Profile Picture</label>
+                        <div class="upload-container">
+                            <input type="file" id="image" accept="image/*" required>
+                            <div class="upload-label">
+                                <span class="upload-icon">📷</span>
+                                <span>Click to upload photo</span>
+                            </div>
+                        </div>
+                        <div id="imagePreview" class="image-preview"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Generate QR Code</button>
+                        <button type="reset" class="btn btn-secondary">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- QR Code Section -->
+            <div id="qrcode-section">
+                <div class="qr-container">
+                    <div id="student-details">
+                        <img id="displayImage" src="" alt="Student Image"/>
+                        <p id="displayName"></p>
+                        <p id="displayStudentId"></p>
+                        <p id="displayEmail"></p>
+                    </div>
+                    <div id="qrcode"></div>
+                    <div class="button-group">
+                        <button id="downloadBtn" class="btn btn-primary" disabled>Download QR Code</button>
+                        <button id="back-button" class="btn btn-secondary">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

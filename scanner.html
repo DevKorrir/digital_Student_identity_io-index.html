@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner Interface - Digital Student Identity</title>
+    <link rel="stylesheet" href="scanner.css">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Digital Student Identity</h1>
+            <p class="subtitle">QR Code Scanner</p>
+        </header>
+
+        <div class="scanner-panel">
+            <div class="scanner-container">
+                <div id="scanner"></div>
+                <div class="scanner-overlay">
+                    <div class="scan-region"></div>
+                </div>
+            </div>
+
+            <div id="result" class="result-container">
+                <div class="card">
+                    <h2>Student Details</h2>
+                    <div id="studentDetails">
+                        <div class="image-container">
+                            <img id="studentImage" src="placeholder.png" alt="Student Image">
+                        </div>
+                        <div class="details-text">
+                            <p><strong>Name:</strong> <span id="studentName">Waiting to scan...</span></p>
+                            <p><strong>ID:</strong> <span id="studentID">Waiting to scan...</span></p>
+                            <p><strong>Email:</strong> <span id="studentEmail">Waiting to scan...</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="scannerInfo" class="scanner-status">Scanning in progress...</div>
+            </div>
+        </div>
+    </div>
+    <script src="scanner.js"></script>
+</body>
+</html>
