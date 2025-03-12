@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | MUSTID</title>
+  <link rel="stylesheet" href="../student/student.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <h1>MUSTID</h1>
+    </div>
+    <ul class="nav-links">
+      <li><a href="../student/student.html" class="active">Dashboard</a></li>
+      <li><a href="logout.html">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="dashboard">
+    <section class="student-info">
+      <h2>Welcome, <span id="student-name">Student</span></h2>
+      <p>Student ID: <span id="student-id">N/A</span></p>
+      <p>Email: <span id="student-email">N/A</span></p>
+    </section>
+    
+    <section class="qr-section">
+      <h3>Your Digital ID QR Code</h3>
+      <div id="qrcode-container"></div>
+      <p>Scan this QR code for quick access.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 MUSTID. All rights reserved.</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-storage-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOKBlp9xkSf879rp-CpQ2NHhUPd2OqyZw",
+      authDomain: "html-projects-b22b9.firebaseapp.com",
+      projectId: "html-projects-b22b9",
+      storageBucket: "html-projects-b22b9.firebasestorage.app",
+      //storageBucket: "html-projects-b22b9.appspot.com",
+      messagingSenderId: "947691676337",
+      appId: "1:947691676337:web:a70592c088d8e33e6c3890",
+      measurementId: "G-JM5M5ZWER6"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <!-- Student Dashboard JS -->
+  <script src="student.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+/* Basic styles for the student dashboard */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+  }
+  
+  .navbar {
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar .logo h1 {
+    margin: 0;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+  }
+  
+  .nav-links li {
+    margin-left: 20px;
+  }
+  
+  .nav-links a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .dashboard {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+  }
+  
+  .student-info {
+    margin-bottom: 30px;
+  }
+  
+  .student-info h2 {
+    margin-bottom: 5px;
+  }
+  
+  .qr-section {
+    text-align: center;
+  }
+  
+  #qrcode-container {
+    margin: 20px auto;
+    width: 220px;
+    height: 220px;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 20px;
+    background: #333;
+    color: #fff;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+  }
+  

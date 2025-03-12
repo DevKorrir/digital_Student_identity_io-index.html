@@ -1,76 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Student Identity</title>
-    <link rel="stylesheet" href="admin.css">
+    <title>Digital Student Identity | Home</title>
+    <link rel="stylesheet" href="../home/home.css">
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Digital Student Identity</h1>
-        </header>
+    <nav class="navbar">
+        <div class="logo">
+            <h1>MUSTID</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="../scanner/scanner.html">Scanner</a></li>
+            <li><a href="../login/login.html">Login</a></li>
+            <li><a href="../register/register.html" class="btn-register">Register</a></li>
+        </ul>
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
 
-        <div class="admin-panel">
-            <!-- Form Section -->
-            <div id="form-section">
-                <h2>Student Details</h2>
-                <form id="student-form">
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" placeholder="Enter Full name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="studentId">Student ID</label>
-                        <input type="text" id="studentId" placeholder="Enter Student Id" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Student Email</label>
-                        <input type="email" id="email" placeholder="Enter Email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="image">Profile Picture</label>
-                        <div class="upload-container">
-                            <input type="file" id="image" accept="image/*" required>
-                            <div class="upload-label">
-                                <span class="upload-icon">📷</span>
-                                <span>Click to upload photo</span>
-                            </div>
-                        </div>
-                        <div id="imagePreview" class="image-preview"></div>
-                    </div>
-
-                    <div class="button-group">
-                        <button type="submit" class="btn btn-primary">Generate QR Code</button>
-                        <button type="reset" class="btn btn-secondary">Clear Form</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- QR Code Section -->
-            <div id="qrcode-section">
-                <div class="qr-container">
-                    <div id="student-details">
-                        <img id="displayImage" src="" alt="Student Image"/>
-                        <p id="displayName"></p>
-                        <p id="displayStudentId"></p>
-                        <p id="displayEmail"></p>
-                    </div>
-                    <div id="qrcode"></div>
-                    <div class="button-group">
-                        <button id="downloadBtn" class="btn btn-primary" disabled>Download QR Code</button>
-                        <button id="back-button" class="btn btn-secondary">Back</button>
-                    </div>
-                </div>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Digital Student Identity Solution</h1>
+            <p>Never worry about forgotten student IDs again. Access exams and campus facilities with a simple QR code.</p>
+            <div class="hero-buttons">
+                <a href="../login/login.html" class="btn btn-primary">Get Started</a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
             </div>
         </div>
-    </div>
+        <div class="hero-image">
+            <img src="images/student-id.svg" alt="Digital Student ID">
+        </div>
+    </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <section id="features" class="features">
+        <h2>Why Choose Digital Student ID</h2>
+        <div class="features-container">
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Secure Identification</h3>
+                <p>Advanced encryption ensures your identity is protected at all times.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Always Available</h3>
+                <p>Access your student ID from any device with internet connection.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Quick Verification</h3>
+                <p>Instant scanning and verification for seamless access to exams and facilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Easy Updates</h3>
+                <p>Update your information without needing to reissue physical cards.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Register</h3>
+                <p>Create an account with your student details and upload your photo.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Get Your QR Code</h3>
+                <p>Receive a unique QR code linked to your student profile.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Use Anywhere</h3>
+                <p>Present your QR code for quick scanning at exams and campus facilities.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>MUSTID</h3>
+                <p>Digital Student Identity Solution</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="../scanner/scanner.html">Scanner</a></li>
+                    <li><a href="../login/login.html">Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p>Email: registraraa@must.ac.ke</p>
+                <p>Phone: +254 799529958</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Firewal pixels. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script src="script.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyD2j4RaJWNy56VoW-wUTJk7i7ykD-Ku84Y",
+          authDomain: "webprojects-e79ee.firebaseapp.com",
+          projectId: "webprojects-e79ee",
+          storageBucket: "webprojects-e79ee.firebasestorage.app",
+          messagingSenderId: "407046999675",
+          appId: "1:407046999675:web:34dea14fe699d36d9ddcde",
+          measurementId: "G-GD34N6J14R"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
 </body>
 </html>

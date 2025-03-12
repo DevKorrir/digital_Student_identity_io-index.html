@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Student Identity | Scanner</title>
+    <link rel="stylesheet" href="../scanner/scanner.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <h1>MUSTID</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../scanner/scanner.html" class="active">Scanner</a></li>
+            <li><a href="../login/login.html">Login</a></li>
+            <li><a href="../register/register.html" class="btn-register">Register</a></li>
+        </ul>
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+    <section class="scanner-container">
+        <div class="scanner-card">
+            <div class="scanner-header">
+                <h2>QR Code Scanner</h2>
+                <p>Scan student QR codes to verify identity</p>
+            </div>
+            
+            <div class="scanner-content">
+                <div class="scanner-options">
+                    <button id="start-camera" class="btn btn-primary">Start Camera</button>
+                    <select id="camera-select" class="camera-select">
+                        <option value="">Select Camera</option>
+                    </select>
+                </div>
+                
+                <div class="scanner-view">
+                    <video id="scanner-preview" class="scanner-preview"></video>
+                    <div class="scan-area"></div>
+                    <div class="scan-line"></div>
+                </div>
+                
+                <div class="scanner-status">
+                    <p id="scan-status">Camera not started. Click the button above to begin scanning.</p>
+                </div>
+            </div>
+            
+            <div id="result-container" class="result-container hidden">
+                <div class="result-header">
+                    <h3>Student Verification Result</h3>
+                    <span id="result-status" class="result-badge">Pending</span>
+                </div>
+                
+                <div class="student-profile">
+                    <div class="student-image">
+                        <img id="student-image" src="" alt="Student Image">
+                    </div>
+                    <div class="student-info">
+                        <h4 id="student-name">-</h4>
+                        <p id="student-id">ID: -</p>
+                        <p id="student-email">Email: -</p>
+                        <p id="verification-time">Time: -</p>
+                    </div>
+                </div>
+                
+                <div class="result-actions">
+                    <button id="verify-button" class="btn btn-success">Verify Identity</button>
+                    <button id="deny-button" class="btn btn-danger">Deny Access</button>
+                    <button id="scan-new" class="btn btn-secondary">Scan New Code</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scanner-instructions">
+        <div class="instructions-container">
+            <h3>How to Use the Scanner</h3>
+            <div class="instruction-steps">
+                <div class="instruction-step">
+                    <div class="step-icon">1</div>
+                    <div class="step-content">
+                        <h4>Start the Camera</h4>
+                        <p>Click the "Start Camera" button and allow camera access when prompted.</p>
+                    </div>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-icon">2</div>
+                    <div class="step-content">
+                        <h4>Position QR Code</h4>
+                        <p>Hold the student's QR code within the scanning area.</p>
+                    </div>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-icon">3</div>
+                    <div class="step-content">
+                        <h4>Verify Identity</h4>
+                        <p>Compare the displayed information with the student and verify or deny access.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>MUSTID</h3>
+                <p>Digital Student Identity Solution</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#features">Features</a></li>
+                    <li><a href="../scanner/scanner.html">Scanner</a></li>
+                    <li><a href="../login/login.html">Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p>Email: registraraa@must.ac.ke</p>
+                <p>Phone: +254 799529958</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Firewal pixels. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js"></script>
+    <script src="scanner.js"></script>
+</body>
+</html>
