@@ -1,72 +1,198 @@
-/* Basic styles for the student dashboard */
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+  --primary: #00d666;
+  --secondary: #007bff;
+  --warning: #fd7e14;
+  --caution: #ffc107;
+  --success: #28a745;
+  --info: #20c997;
+  --white: #fff;
+  --gray: #868e96;
+  --dark: #343a40;
+  --light: #f8f9fa;
+  --transition: all 0.3s ease;
+  --border-radius: 8px;
+  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
-  }
-  
+  background-color: #f5f7fa;
+  color: var(--dark);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation Bar */
+.navbar {
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--white);
+  box-shadow: var(--box-shadow);
+}
+
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.nav-links li {
+  margin-left: 1.5rem;
+}
+
+.nav-links a {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.nav-links a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-links a.active {
+  background-color: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+}
+
+/* Main Dashboard */
+.dashboard {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Student Info Section */
+.student-info {
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2rem;
+  border-left: 5px solid var(--primary);
+}
+
+.student-info h2 {
+  color: var(--dark);
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.student-info p {
+  margin-bottom: 0.5rem;
+  color: var(--gray);
+  font-size: 1.1rem;
+}
+
+.student-info span {
+  color: var(--dark);
+  font-weight: 500;
+}
+
+/* QR Code Section */
+.qr-section {
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  border-left: 5px solid var(--secondary);
+}
+
+.qr-section h3 {
+  color: var(--dark);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+#qrcode-container {
+  background-color: var(--white);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  display: inline-block;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.qr-section p {
+  color: var(--gray);
+  font-size: 1rem;
+}
+
+/* Footer */
+footer {
+  background-color: var(--dark);
+  color: var(--light);
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .navbar {
-    background: #333;
-    color: #fff;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    padding: 1rem;
   }
   
-  .navbar .logo h1 {
-    margin: 0;
+  .logo {
+    margin-bottom: 1rem;
   }
   
   .nav-links {
-    list-style: none;
-    display: flex;
-    margin: 0;
+    width: 100%;
+    justify-content: center;
   }
   
   .nav-links li {
-    margin-left: 20px;
-  }
-  
-  .nav-links a {
-    color: #fff;
-    text-decoration: none;
+    margin: 0 0.5rem;
   }
   
   .dashboard {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 5px;
+    padding: 1rem;
   }
   
-  .student-info {
-    margin-bottom: 30px;
+  .student-info, .qr-section {
+    padding: 1.5rem;
   }
-  
-  .student-info h2 {
-    margin-bottom: 5px;
-  }
-  
-  .qr-section {
-    text-align: center;
-  }
-  
-  #qrcode-container {
-    margin: 20px auto;
-    width: 220px;
-    height: 220px;
-  }
-  
-  footer {
-    text-align: center;
-    padding: 20px;
-    background: #333;
-    color: #fff;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-  }
-  
+}
+
+/* Animation for page load */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.student-info, .qr-section {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.student-info {
+  animation-delay: 0.1s;
+}
+
+.qr-section {
+  animation-delay: 0.3s;
+}
