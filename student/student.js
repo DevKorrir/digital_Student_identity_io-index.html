@@ -1,41 +1,38 @@
+document.addEventListener("DOMContentLoaded", function () {
+  // Retrieve student details from localStorage
+  const studentName = localStorage.getItem("studentName") || "Student";
+  const studentId = localStorage.getItem("studentId") || "N/A";
+  const studentEmail = localStorage.getItem("studentEmail") || "N/A";
+  const studentImage = localStorage.getItem("studentImage") || "";  // Image URL
 
-  
-  // Assume the student's safe ID (e.g., "Ct206_123456_24") is stored in localStorage during login.
-  const safeStudentId = localStorage.getItem("studentId");
+  // Display student details on the dashboard
+  document.getElementById("student-name").textContent = studentName;
+  document.getElementById("student-id").textContent = studentId;
+  document.getElementById("student-email").textContent = studentEmail;
 
-  console.log("Retrieved studentId from localStorage:", safeStudentId); 
-  
-  // If no studentId found in localStorage, redirect to login page.
-  if (!safeStudentId) {
-    console.warn("No studentId found in localStorage. Redirecting to login.");
-    window.location.href = "../login/login.html";
-  } else {
-    // Fetch the student document from Firestore
-    db.collection("students").doc(safeStudentId).get()
-      .then(doc => {
-        if (doc.exists) {
-          const data = doc.data();
-          // Update UI with student data
-          document.getElementById("student-name").textContent = data.name || "Student";
-          // Show the original student ID if stored; otherwise, display the safe ID.
-          document.getElementById("student-id").textContent = data.studentId || safeStudentId;
-          document.getElementById("student-email").textContent = data.email || "N/A";
-  
-          // Generate the QR code using the safeStudentId or any string representing the student's digital ID.
-          new QRCode(document.getElementById("qrcode-container"), {
-            text: safeStudentId,
-            width: 220,
-            height: 220,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-          });
-        } else {
-          alert("Student record not found.");
-        }
-      })
-      .catch(error => {
-        console.error("Error fetching student data:", error);
-      });
+  // Generate QR Code Data
+  const qrData = JSON.stringify({
+      name: studentName,
+      id: studentId,
+      email: studentEmail,
+      image: studentImage
+  });
+
+  // Generate QR Code
+  const qrContainer = document.getElementById("qrcode-container");
+  qrContainer.innerHTML = ""; // Clear previous QR code if any
+  new QRCode(qrContainer, {
+      text: qrData,  // Encodes student details in the QR code
+      width: 200,
+      height: 200
+  });
+
+  // Display student image if available
+  if (studentImage) {
+      const imgElement = document.createElement("img");
+      imgElement.src = studentImage;
+      imgElement.alt = "Student ID";
+      imgElement.style = "display: block; margin-top: 10px; width: 150px; height: auto; border-radius: 10px;";
+      qrContainer.appendChild(imgElement);
   }
-  
+});
