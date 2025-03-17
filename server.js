@@ -147,6 +147,39 @@ app.put("/update-student/:id", upload.single("image"), async (req, res) => {
   }
 });
 
+
+
+// Login Endpoint
+app.post("/login", async (req, res) => {
+  const { email, studentId } = req.body;
+  // Convert the provided student ID to a safe format (replace '/' with '_')
+ //const safeStudentId = studentId.replace(/\//g, "_");
+  
+
+  try {
+    // Find the student using the safe student ID
+    const student = await Student.findOne({ studentId: studentId });
+    if (!student) {
+      return res.status(404).json({ message: "No student found with this ID. Please check your Student ID." });
+    }
+    // Validate the email address
+    if (student.email !== email) {
+      return res.status(401).json({ message: "The email does not match the registered Student ID." });
+    }
+    // Login successful, return the student data
+    res.json({
+      message: "Login successful!",
+      studentId: student.studentId,
+      name: student.name || "Student",
+      email: student.email || "N/A"
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "An error occurred during login. Please try again." });
+  }
+});
+
+
 // Start the Server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
