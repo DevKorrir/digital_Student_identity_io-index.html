@@ -283,5 +283,194 @@ document.getElementById("student-form").addEventListener("submit", async functio
   }
 });
 
+
+
+
+// Function to fetch all students data
+async function fetchStudents() {
+    try {
+      const response = await fetch("http://localhost:5002/get-students");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const students = await response.json();
+      displayStudents(students);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      const tableBody = document.getElementById("students-table-body");
+      if (tableBody) {
+        tableBody.innerHTML = `<tr><td colspan="8">Failed to load students data. ${error.message}</td></tr>`;
+      }
+    }
+  }
+  
+  // Function to display students in the table
+  function displayStudents(students) {
+    const tableBody = document.getElementById("students-table-body");
+    
+    if (!tableBody) {
+      console.error("Table body element not found!");
+      return;
+    }
+    
+    if (students.length === 0) {
+      tableBody.innerHTML = "<tr><td colspan='8'>No students found.</td></tr>";
+      return;
+    }
+    
+    let html = '';
+    
+    students.forEach(student => {
+      html += `
+        <tr>
+          <td>${student.studentId}</td>
+          <td>${student.name}</td>
+          <td>${student.email}</td>
+          <td>${student.course}</td>
+          <td>${student.year}</td>
+          <td>
+            <img src="${student.image || 'default-profile.png'}" alt="${student.name}" class="student-thumbnail">
+          </td>
+          <td><span class="status active">Active</span></td>
+          <td class="actions">
+            <button onclick="editStudent('${student._id}')" class="edit-btn">Edit</button>
+            <button onclick="deleteStudent('${student._id}')" class="delete-btn">Delete</button>
+          </td>
+        </tr>
+      `;
+    });
+    
+    tableBody.innerHTML = html;
+  }
+  
+  // Function to delete a student
+  async function deleteStudent(studentId) {
+    if (!confirm("Are you sure you want to delete this student?")) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:5002/delete-student/${studentId}`, {
+        method: "DELETE"
+      });
+      
+      const result = await response.json();
+      alert(result.message);
+      
+      // Refresh the students list
+      fetchStudents();
+    } catch (error) {
+      console.error("Error deleting student:", error);
+      alert("Failed to delete student");
+    }
+  }
+  
+  // Function to load student data for editing
+  async function editStudent(studentId) {
+    try {
+      const response = await fetch(`http://localhost:5002/get-student/${studentId}`);
+      const student = await response.json();
+      
+      // Fill the form with student data
+      document.getElementById("name").value = student.name;
+      document.getElementById("studentId").value = student.studentId;
+      document.getElementById("email").value = student.email;
+      document.getElementById("course").value = student.course;
+      document.getElementById("year").value = student.year;
+      
+      // Update form action and button text
+      document.getElementById("student-form").setAttribute("data-mode", "edit");
+      document.getElementById("student-form").setAttribute("data-id", studentId);
+      
+      const submitBtn = document.getElementById("submit-btn");
+      if (submitBtn) {
+        submitBtn.textContent = "Update Student";
+      } else {
+        // If no submit button with ID "submit-btn", find the form's submit button
+        const formSubmitBtn = document.querySelector("#student-form button[type='submit']");
+        if (formSubmitBtn) {
+          formSubmitBtn.textContent = "Update Student";
+        }
+      }
+    } catch (error) {
+      console.error("Error loading student data:", error);
+      alert("Failed to load student data for editing");
+    }
+  }
+  
+  // Function to update a student
+  async function updateStudent(studentId, formData) {
+    try {
+      const response = await fetch(`http://localhost:5002/update-student/${studentId}`, {
+        method: "PUT",
+        body: formData
+      });
+      
+      const result = await response.json();
+      alert(result.message);
+      
+      // Reset form
+      document.getElementById("student-form").reset();
+      document.getElementById("student-form").setAttribute("data-mode", "add");
+      
+      // Reset submit button text
+      const submitBtn = document.getElementById("submit-btn");
+      if (submitBtn) {
+        submitBtn.textContent = "Add Student";
+      } else {
+        const formSubmitBtn = document.querySelector("#student-form button[type='submit']");
+        if (formSubmitBtn) {
+          formSubmitBtn.textContent = "Add Student";
+        }
+      }
+      
+      // Refresh the students list
+      fetchStudents();
+    } catch (error) {
+      console.error("Error updating student:", error);
+      alert("Failed to update student");
+    }
+  }
+  
+  // Modified form submission handler to handle both add and update
+  document.getElementById("student-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+  
+    let formData = new FormData();
+    formData.append("name", document.getElementById("name").value);
+    formData.append("studentId", document.getElementById("studentId").value);
+    formData.append("email", document.getElementById("email").value);
+    formData.append("course", document.getElementById("course").value);
+    formData.append("year", document.getElementById("year").value);
+    
+    if (document.getElementById("image").files[0]) {
+      formData.append("image", document.getElementById("image").files[0]);
+    }
+  
+    try {
+      const formMode = this.getAttribute("data-mode") || "add";
+      
+      if (formMode === "edit") {
+        const studentId = this.getAttribute("data-id");
+        await updateStudent(studentId, formData);
+      } else {
+        let response = await fetch("http://localhost:5002/add-student", {
+          method: "POST",
+          body: formData,
+        });
+  
+        let result = await response.json();
+        alert(result.message);
+        this.reset();
+        fetchStudents();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred");
+    }
+  });
+  
+  // Load students when the page loads
+  document.addEventListener("DOMContentLoaded", fetchStudents);
   
   
