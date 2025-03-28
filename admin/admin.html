@@ -1,7 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE >
+<html>
 <head>
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Student Identity | Admin</title>
     <link rel="stylesheet" href="admin.css">
 </head>
@@ -13,7 +14,6 @@
         <ul class="nav-links">
             <li><a href="../index.html">Home</a></li>
             <li><a href="../scanner/scanner.html">Scanner</a></li>
-            <!--<li><a href="dashboard.html">Dashboard</a></li>-->
             <li><a href="../admin/admin.html" class="active">Admin</a></li>
             <li><a href="../login/login.html" id="logout-btn" class="btn-logout">Logout</a></li>
         </ul>
@@ -46,24 +46,27 @@
                 <h2>Admin Dashboard</h2>
                 <div class="admin-actions">
                     <div class="search-bar">
-                        <input type="text" placeholder="Search students...">
-                        <button type="button" class="search-btn">🔍</button>
+                        <input type="text" id="search-input" placeholder="Search students...">
+                        <button type="button" id="search-btn" class="search-btn">🔍</button>
                     </div>
-                    <button class="btn btn-primary">Add New Student</button>
+                    <button id="add-student-btn" class="btn btn-primary">Add New Student</button>
                 </div>
             </header>
+
+            <!-- Status Message Display -->
+            <div id="status" class="status"></div>
 
             <section id="student-management" class="admin-section">
                 <div class="section-header">
                     <h3>Student Management</h3>
                     <div class="filter-options">
-                        <select name="department">
+                        <select id="department-filter" name="department">
                             <option value="">All Departments</option>
                             <option value="cs">Computer Science</option>
                             <option value="eng">Engineering</option>
                             <option value="bus">Business</option>
                         </select>
-                        <select name="year">
+                        <select id="year-filter" name="year">
                             <option value="">All Years</option>
                             <option value="1">Year 1</option>
                             <option value="2">Year 2</option>
@@ -85,12 +88,10 @@
                                 <th>Image</th> 
                                 <th>Status</th>
                                 <th>Actions</th>
+                                <th>QR Code</th>
                             </tr>
                         </thead>
-                        <!-- Empty tbody that will be populated dynamically -->
-                        
                         <tbody id="students-table-body"></tbody>
-
                     </table>
                 </div>
                 
@@ -105,12 +106,11 @@
                 </div>
             </section>
 
-            <section id="qr-generator" class="admin-section hidden">
+            <section id="student-form-section" class="admin-section">
                 <div class="container">
                     <div class="admin-panel">
-                        <!-- Form Section -->
                         <div id="form-section">
-                            <h2>Generate Student QR Code</h2>
+                            <h2>Add/Edit Student</h2>
                             <form id="student-form">
                                 <div class="form-group">
                                     <label for="name">Full Name</label>
@@ -120,12 +120,13 @@
                                 <div class="form-group">
                                     <label for="studentId">Student ID</label>
                                     <input 
-                                    type="text" 
-                                    id="studentId" 
-                                    placeholder="Enter Student Id (e.g., Ct206/123456/25)" 
-                                    pattern="[A-Za-z]{2}\d{3}/\d{6}/\d{2}" 
-                                    title="Please enter a valid ID in the format: Ct206/204483/24" 
-                                    required>
+                                        type="text" 
+                                        id="studentId" 
+                                        placeholder="Enter Student Id (e.g., Ct206/123456/25)" 
+                                        pattern="[A-Za-z]{2}\d{3}/\d{6}/\d{2}" 
+                                        title="Please enter a valid ID in the format: Ct206/123456/20" 
+                                        required
+                                    >
                                 </div>
 
                                 <div class="form-group">
@@ -135,7 +136,7 @@
                                     type="email" 
                                     id="email" 
                                     placeholder="Enter Email" 
-                                    pattern="[-a-zA-Z0-9._%+]+@students\.must\.ac\.ke" 
+                                    pattern="^[a-zA-Z0-9._%+\-]+@students\.must\.ac\.ke$" 
                                     title="Email must be in the format: name123456@students.must.ac.ke"
                                     required>
                                 </div>
@@ -147,13 +148,14 @@
 
                                 <div class="form-group">
                                     <label for="year">Year of Study</label>
-                                    <input type="number" id="year" placeholder="Enter Year of Study" required>
+                                    <input type="number" id="year" min="1" max="4" placeholder="Enter Year of Study" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="image">Student ID Image</label>
                                     <div class="upload-container">
-                                        <input type="file" id="image" accept="image/*" required>
+                                        <input type="file" id="image" accept="image/*">
+                                        <span id="fileName">No file chosen</span>
                                         <div class="upload-label">
                                             <span class="upload-icon">📷</span>
                                             <span>Click to upload photo</span>
@@ -162,28 +164,23 @@
                                     <div id="imagePreview" class="image-preview"></div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="imageQuality">Image Compression Quality</label>
+                                    <input 
+                                        type="range" 
+                                        id="imageQuality" 
+                                        min="10" 
+                                        max="100" 
+                                        value="75"
+                                    >
+                                    <span id="compressionValue">75%</span>
+                                </div>
+
                                 <div class="button-group">
-                                    <button type="submit" class="btn btn-primary">Save Information</button>
+                                    <button type="submit" id="submit-btn" class="btn btn-primary">Add Student</button>
                                     <button type="reset" class="btn btn-secondary">Clear Form</button>
                                 </div>
                             </form>
-                        </div>
-
-                        <!-- QR Code Section -->
-                        <div id="qrcode-section" class="hidden">
-                            <div class="qr-container">
-                                <div id="student-details">
-                                    <img id="displayImage" src="" alt="Student Image"/>
-                                    <p id="displayName"></p>
-                                    <p id="displayStudentId"></p>
-                                    <p id="displayEmail"></p>
-                                </div>
-                                <div id="qrcode"></div>
-                                <div class="button-group">
-                                    <button id="downloadBtn" class="btn btn-primary" disabled>Download QR Code</button>
-                                    <button id="back-button" class="btn btn-secondary">Back</button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,28 +214,11 @@
         </div>
     </footer>
 
-     <!-- Firebase Compat SDKs (ensuring firebase is defined globally) -->
-  <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-storage-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCOKBlp9xkSf879rp-CpQ2NHhUPd2OqyZw",
-      authDomain: "html-projects-b22b9.firebaseapp.com",
-      projectId: "html-projects-b22b9",
-      storageBucket: "html-projects-b22b9.firebasestorage.app",
-      //storageBucket: "html-projects-b22b9.appspot.com",
-      messagingSenderId: "947691676337",
-      appId: "1:947691676337:web:a70592c088d8e33e6c3890",
-      measurementId: "G-JM5M5ZWER6"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-  <!-- Your external JavaScript file (included only once) -->
-  <script src="admin.js"></script>
+    <!-- Your external JavaScript file -->
+    <script src="admin.js"></script>
 </body>
 </html>
