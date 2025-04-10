@@ -17,7 +17,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   
     // Generate QR Code Data: encode the image URL directly
-    const qrData = studentImage;
+    //const qrData = studentImage;
+    // Create an object with all necessary details
+    const studentData = {
+      name: studentName,
+      id: studentId,
+      image: studentImage
+    };
+
+    const qrData = JSON.stringify(studentData);
   
     // Generate QR Code
     const qrContainer = document.getElementById("qrcode-container");

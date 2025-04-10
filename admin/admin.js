@@ -243,8 +243,8 @@ function displayStudents(students) {
         
         new QRCode(document.getElementById(`qr-${student._id}`), {
             text: qrData,
-            width: 100,
-            height: 100,
+            width: 50,
+            height: 50,
             correctLevel: QRCode.CorrectLevel.L // Use lowest error correction level
         });
     });
