@@ -15,6 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
       console.warn("No student image URL available to encode.");
       return;
     }
+
+    // Compute expiration timestamp (5 minutes from now)
+  const expiresAt = Date.now() + (5 * 60 * 1000);
   
     // Generate QR Code Data: encode the image URL directly
     //const qrData = studentImage;
@@ -22,16 +25,33 @@ document.addEventListener("DOMContentLoaded", function () {
     const studentData = {
       name: studentName,
       id: studentId,
-      image: studentImage
+      email: studentEmail,
+      image: studentImage,
+      expiresAt: expiresAt
     };
 
-    const qrData = JSON.stringify(studentData);
+    const dataString = JSON.stringify(studentData);
+
+    // -------------------------------
+  // Encryption Part using CryptoJS
+  // -------------------------------
+  // Replace 'YOUR_SECRET_KEY' with your actual secret key
+  const secretKey = "e92fa574c0742f4112944f79c813cf2f3d26f169d1ba966ac28feb5721c65e97";
+
+   // Encrypt the dataString using AES encryption
+   const encryptedData = CryptoJS.AES.encrypt(dataString, secretKey).toString();
+
+   // For debugging: log the encrypted data
+   console.log("Encrypted Data:", encryptedData);
+ 
+   // This is what you'll encode in the QR code now
+   const qrData = encryptedData;
   
     // Generate QR Code
     const qrContainer = document.getElementById("qrcode-container");
     qrContainer.innerHTML = ""; // Clear previous QR code if any
     new QRCode(qrContainer, {
-        text: qrData,  // Encodes the image URL directly
+        text: qrData,  // Encodes the encrypted data
         width: 300,              // Increased width
         height: 300,             // Increased height
         colorDark: "#000000",
@@ -63,3 +83,12 @@ document.addEventListener("DOMContentLoaded", function () {
   qrContainer.appendChild(imagePreviewContainer);
   });
   
+
+  //generate 64 char hexadecimal ecryption key 
+  //node -e "console.log(require('crypto').randomBytes(32).toString('hex'));"
+
+  //decrypt
+//   const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+// const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+// console.log("Decrypted Data:", JSON.parse(decryptedData));
+

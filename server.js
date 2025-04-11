@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const cors = require('cors');
+const crypto = require('crypto'); // Imported crypto for encryption
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5002;
@@ -37,9 +39,41 @@ mongoose.connect('mongodb://localhost:27017/mustid', {
   console.error('❌ MongoDB Connection Error:', err);
 });
 
+// ============================================================
+// Encryption Functions
+// ============================================================
+// For demonstrative purposes we are using deterministic encryption
+// by using a fixed IV. This allows us to query on encrypted fields,
+// but note that using a fixed IV is NOT recommended for high-security
+// applications as it weakens encryption randomness.
+const algorithm = 'aes-256-cbc';
+// Derive a 32-byte key from a passphrase (replace YOUR_SECRET with your secret)
+// In production, use environment variables and secure key management.
+const secretKey = crypto
+.createHash('sha256')
+.update(String(process.env.SECRET_KEY))
+.digest()
+.slice(0, 32);
+const fixedIV = Buffer.alloc(16, 0); // 16-byte IV filled with zeros for deterministic encryption
+
+function encrypt(text) {
+  const cipher = crypto.createCipheriv(algorithm, secretKey, fixedIV);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+}
+
+function decrypt(encrypted) {
+  const decipher = crypto.createDecipheriv(algorithm, secretKey, fixedIV);
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+// ============================================================
+
 // Define a Student schema and model
 const studentSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true }, // encrypted
   studentId: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   course: { type: String, required: true },
@@ -133,11 +167,16 @@ app.post('/add-student', upload.single('image'), async (req, res) => {
       });
     }
 
+    // Encrypt sensitive fields before storing them
+    const encryptedName = encrypt(name);
+    const encryptedStudentId = encrypt(studentId);
+    const encryptedEmail = encrypt(email);
+
     // Create new student record with image URL and Cloudinary ID
     const newStudent = new Student({
-      name,
-      studentId,
-      email,
+      name: encryptedName,
+      studentId: encryptedStudentId,
+      email: encryptedEmail,
       course,
       year: Number(year),
       image: result.secure_url,
@@ -178,7 +217,18 @@ app.post('/add-student', upload.single('image'), async (req, res) => {
 app.put('/update-student/:id', async (req, res) => {
   try {
     const { name, studentId, email, course, year, image } = req.body;
-    const updatedData = { name, studentId, email, course, year: Number(year), image };
+
+    const updatedData = { 
+      name: name ? encrypt(name) : undefined, 
+      studentId: studentId ? encrypt(studentId) : undefined, 
+      email: email ? encrypt(email) : undefined, 
+      course, 
+      year: Number(year), 
+      image 
+    };
+
+    // Remove properties that are undefined
+    Object.keys(updatedData).forEach(key => updatedData[key] === undefined && delete updatedData[key]);
     
     const updatedStudent = await Student.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     
@@ -265,7 +315,7 @@ app.get('/get-student/:id', async (req, res) => {
 });
 
 // Add this new endpoint below your other routes
-
+// Login endpoint: Note that we must encrypt input values deterministically to search the database.
 app.post('/login', async (req, res) => {
   const { email, studentId } = req.body;
 
@@ -274,8 +324,13 @@ app.post('/login', async (req, res) => {
   }
 
   try {
+
+    // Encrypt input values to search in the database
+    const encryptedEmail = encrypt(email);
+    const encryptedStudentId = encrypt(studentId);
+
     // Find the student by email and studentId
-    const student = await Student.findOne({ email, studentId });
+    const student = await Student.findOne({ email: encryptedEmail, studentId: encryptedStudentId });
     
     if (!student) {
       return res.status(401).json({ message: 'Invalid email or student ID' });
@@ -283,9 +338,9 @@ app.post('/login', async (req, res) => {
 
     // Successful login - send back the student info
     res.json({
-      studentId: student.studentId,
-      name: student.name,
-      email: student.email,
+      studentId: decrypt(student.studentId),
+      name: decrypt(student.name),
+      email: decrypt(student.email),
       image: student.image
     });
   } catch (error) {
