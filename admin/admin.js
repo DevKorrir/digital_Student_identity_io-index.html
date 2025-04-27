@@ -176,54 +176,178 @@ async function updateStudent(studentId, formData) {
     }
 }
 
-// Fetch students function with QR code generation
+// Table pagination and display functionality
+let currentPage = 1;
+const recordsPerPage = 5;
+let allStudents = [];
+
+// Fetch students function with pagination support
 async function fetchStudents() {
     try {
         const response = await fetch('http://localhost:5002/get-students');
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        const students = await response.json();
-        displayStudents(students);
+        allStudents = await response.json();
+        updatePagination();
+        displayStudents();
     } catch (error) {
         console.error('Error fetching students:', error);
         studentsList.innerHTML = `<tr><td colspan="8">Failed to load students data. ${error.message}</td></tr>`;
+        document.getElementById('empty-state').style.display = 'block';
     }
 }
 
-// Display students with QR code generation
-function displayStudents(students) {
+// Update pagination info and controls
+function updatePagination() {
+    const totalStudents = allStudents.length;
+    const totalPages = Math.ceil(totalStudents / recordsPerPage);
+    
+    // Update text info
+    document.getElementById('total-records').textContent = totalStudents;
+    const startRecord = totalStudents === 0 ? 0 : (currentPage - 1) * recordsPerPage + 1;
+    const endRecord = Math.min(currentPage * recordsPerPage, totalStudents);
+    document.getElementById('start-record').textContent = startRecord;
+    document.getElementById('end-record').textContent = endRecord;
+    
+    // Generate page number buttons
+    const pageNumbers = document.getElementById('page-numbers');
+    pageNumbers.innerHTML = '';
+    
+    // Determine range of page numbers to display
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    
+    if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4);
+    }
+    
+    // Add first page if not in range
+    if (startPage > 1) {
+        const firstPageBtn = document.createElement('button');
+        firstPageBtn.textContent = '1';
+        firstPageBtn.addEventListener('click', () => goToPage(1));
+        pageNumbers.appendChild(firstPageBtn);
+        
+        if (startPage > 2) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'page-ellipsis';
+            pageNumbers.appendChild(ellipsis);
+        }
+    }
+    
+    // Add page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.textContent = i;
+        if (i === currentPage) {
+            pageBtn.className = 'active';
+        }
+        pageBtn.addEventListener('click', () => goToPage(i));
+        pageNumbers.appendChild(pageBtn);
+    }
+    
+    // Add last page if not in range
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'page-ellipsis';
+            pageNumbers.appendChild(ellipsis);
+        }
+        
+        const lastPageBtn = document.createElement('button');
+        lastPageBtn.textContent = totalPages;
+        lastPageBtn.addEventListener('click', () => goToPage(totalPages));
+        pageNumbers.appendChild(lastPageBtn);
+    }
+    
+    // Update prev/next buttons
+    document.getElementById('prev-page').disabled = currentPage === 1;
+    document.getElementById('next-page').disabled = currentPage === totalPages;
+    
+    // Add event listeners to prev/next buttons
+    document.getElementById('prev-page').onclick = () => goToPage(currentPage - 1);
+    document.getElementById('next-page').onclick = () => goToPage(currentPage + 1);
+    
+    // Show empty state if no students
+    document.getElementById('empty-state').style.display = totalStudents === 0 ? 'block' : 'none';
+}
+
+// Go to specific page
+function goToPage(page) {
+    currentPage = page;
+    displayStudents();
+    updatePagination();
+}
+
+// Display students for current page
+function displayStudents() {
     if (!studentsList) {
         console.error('Table body element not found!');
         return;
     }
     
-    if (students.length === 0) {
+    if (allStudents.length === 0) {
         studentsList.innerHTML = '<tr><td colspan="8">No students found.</td></tr>';
         return;
     }
     
+    // Calculate slice for current page
+    const start = (currentPage - 1) * recordsPerPage;
+    const end = start + recordsPerPage;
+    const paginatedStudents = allStudents.slice(start, end);
+    
     let html = '';
     
-    students.forEach(student => {
+    paginatedStudents.forEach(student => {
+        // Truncate long strings
+        const truncatedEmail = student.email.length > 25 ? 
+            student.email.substring(0, 12) + '...' + student.email.substring(student.email.indexOf('@')) : 
+            student.email;
+        
+        const truncatedName = student.name.length > 20 ? 
+            student.name.substring(0, 17) + '...' : 
+            student.name;
+            
+        const truncatedCourse = student.course.length > 20 ? 
+            student.course.substring(0, 17) + '...' : 
+            student.course;
+        
         html += `
             <tr>
-                <td>${student.studentId}</td>
-                <td>${student.name}</td>
-                <td>${student.email}</td>
-                <td>${student.course}</td>
+                <td class="student-id">${student.studentId}</td>
+                <td class="truncate" title="${student.name}">${truncatedName}</td>
+                <td class="truncate" title="${student.email}">${truncatedEmail}</td>
+                <td class="truncate" title="${student.course}">${truncatedCourse}</td>
                 <td>${student.year}</td>
                 <td>
-                    <img src="${student.image || 'default-profile.png'}" alt="${student.name}" class="student-thumbnail">
+                    <div class="student-thumbnail-container">
+                        <img src="${student.image || '/assets/default-profile.png'}" alt="${student.name}" class="student-thumbnail">
+                    </div>
                 </td>
-                <td><span class="status active">Active</span></td>
+                <td>
+                    <span class="status-badge active">Active</span>
+                </td>
                 <td class="actions">
-                    <button onclick="editStudent('${student._id}')" class="edit-btn">Edit</button>
-                    <button onclick="deleteStudent('${student._id}')" class="delete-btn">Delete</button>
-                </td>
-                <td class="qr-container">
-                    <div id="qr-${student._id}"></div>
-                    <div class="qr-info">Student details</div>
+                    <button onclick="viewStudent('${student._id}')" class="action-btn view-btn" data-tooltip="View">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                        </svg>
+                    </button>
+                    <button onclick="editStudent('${student._id}')" class="action-btn edit-btn" data-tooltip="Edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                        </svg>
+                    </button>
+                    <button onclick="deleteStudent('${student._id}')" class="action-btn delete-btn" data-tooltip="Delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                    </button>
                 </td>
             </tr>
         `;
@@ -231,23 +355,34 @@ function displayStudents(students) {
     
     studentsList.innerHTML = html;
     
-    // Generate QR codes after rendering
-    students.forEach(student => {
-        const qrData = JSON.stringify({
-            studentId: student.studentId,
-            name: student.name,
-            email: student.email,
-            course: student.course,
-            imageUrl: student.image
-        });
-        
-        new QRCode(document.getElementById(`qr-${student._id}`), {
-            text: qrData,
-            width: 50,
-            height: 50,
-            correctLevel: QRCode.CorrectLevel.L // Use lowest error correction level
-        });
+    // Generate QR codes after rendering (if needed)
+    // This is removed from the main display for a cleaner table
+    // You can add a QR view in the view student modal instead
+}
+
+// View student function (new)
+function viewStudent(studentId) {
+    // Find student from allStudents array
+    const student = allStudents.find(s => s._id === studentId);
+    if (!student) return;
+    
+    // Generate QR code data
+    const qrData = JSON.stringify({
+        studentId: student.studentId,
+        name: student.name,
+        email: student.email,
+        course: student.course,
+        imageUrl: student.image
     });
+    
+    // Here you would open a modal with student details and QR code
+    // For now just show an alert
+    alert(`Viewing student: ${student.name}\nQR data contains student details`);
+    
+    // In a real implementation, you would open a modal with:
+    // - Student full details
+    // - QR code generated with the qrData
+    // - Option to print ID card
 }
 
 // Edit student function
