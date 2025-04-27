@@ -223,7 +223,7 @@ function displayStudents(students) {
                 </td>
                 <td class="qr-container">
                     <div id="qr-${student._id}"></div>
-                    <div class="qr-info">QR contains student details</div>
+                    <div class="qr-info">Student details</div>
                 </td>
             </tr>
         `;
