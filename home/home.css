@@ -163,6 +163,7 @@ body {
     align-items: center;
 }
 .hero-image img {
+    border-radius: 20px;
     max-width: 100%;
     animation: float 3s ease-in-out infinite;
 }
