@@ -1,4 +1,5 @@
-# Smart Student identification System
+# DIGITAL STUDENT IDENTIFICATION SYSTEM  (QR CODE BASED)
+         MUSTID
 
 ## 📖 Overview
 
